@@ -24,6 +24,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }
   }),
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider !== 'credentials') return true;
+      const existingUser = await getUserById(user?.id as string)
+      console.log({ user, account })
+      if (!existingUser?.emailVerified) {
+        return false;
+      }
+      //TODO : add 2FA check
+      return true
+    },
     async session({ session, token }) {
       if (token.sub && session.user) {
         session.user.id = token.sub;
@@ -39,7 +49,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         return token;
       }
 
-      const existingUser = await db.user.findUnique({ where: { id: token.sub } });
+      const existingUser = await getUserById(token.sub);
 
       if (!existingUser) return token;
       token.role = existingUser.role;
