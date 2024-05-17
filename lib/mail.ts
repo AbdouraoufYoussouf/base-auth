@@ -17,5 +17,23 @@ export const sendVerificationEmail = async (
         subject: "Verify your email address",
         html: message,
     })
-    console.log('Email send!')
+    console.log('Email verification send!')
+}
+
+export const sendPasswordResetEmail = async (
+    email: string,
+    name: string,
+    token: string
+) => {
+    const resetLink = `${process.env.ORIGIN_URL}/auth/new-password?token=${token}`
+    const message = `<p> Hi ${name}, <br> Please click here to reset your password. <br> 
+    <a href="${resetLink}">Verify Email</a></p>`;
+
+    await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: email,
+        subject: "Reset password",
+        html: message,
+    })
+    console.log('Email reset send!')
 }
