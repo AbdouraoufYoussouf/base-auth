@@ -13,7 +13,6 @@ const googleSecret = process.env.GOOGLE_CLIENT_SECRET
 const githubId = process.env.GITHUB_CLIENT_ID
 const githubSecret = process.env.GITHUB_CLIENT_SECRET
 
-console.log(googleId)
 
 // if (!googleId || !googleSecret) {
 //     throw new Error('Google id or secret not found');
