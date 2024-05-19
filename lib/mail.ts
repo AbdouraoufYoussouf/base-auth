@@ -43,7 +43,8 @@ export const sendTwoFactorTokenEmail = async (
     name: string,
     token: string
 ) => {
-    const message = `<p> Hi ${name}, <br> Your 2FA code: ${token}</a></p>`;
+    const message = `<p> Hi ${name}, <br> Your 2FA code: ${token}</a>
+    <br> Please enter this code in the 2FA field to complete the login process. code expire in 15 miutes</p>`;
 
     await resend.emails.send({
         from: "onboarding@resend.dev",

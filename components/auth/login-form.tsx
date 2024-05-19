@@ -44,7 +44,7 @@ export const LoginForm = () => {
             handleLogin(values)
                 .then((data) => {
                     if (data?.error) {
-                       
+
                         setError(data?.error);
                     }
                     if (data?.success) {
@@ -142,7 +142,7 @@ export const LoginForm = () => {
                     <FormError message={error || urlError} />
                     <FormSuccess message={success} />
                     <Button disabled={isPending} variant={'primary'} type="submit" className="w-full">
-                        { twoFactor? "Confirm" : "Login"}
+                        {twoFactor ? "Confirm" : "Login"}
                     </Button>
                 </form>
             </Form>

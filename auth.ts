@@ -5,8 +5,10 @@ import { db } from "./lib/db"
 import { getUserById } from "./repository/user-repository"
 import { UserRole } from "@prisma/client"
 import { getTwoFactorConfirmationByUserId } from "./repository/two-factor-token-confirmation"
+import { getAccountByUserId } from "./repository/account"
+import { baseObjectInputType } from "zod"
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
+export const { auth, handlers, signIn, signOut ,unstable_update} = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(db),
   pages: {
@@ -54,8 +56,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (token.role && session.user) {
         session.user.role = token.role as UserRole;
       }
+      if ( session.user) {
+        session.user.isOAuth = token.isOAuth as boolean
+        session.user.email = token.email as string;
+        session.user.name = token.name as string
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+      }
       return session;
     },
+    
     async jwt({ token }) {
       // console.log({token})
       if (!token.sub) {
@@ -65,7 +74,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       const existingUser = await getUserById(token.sub);
 
       if (!existingUser) return token;
+
+      const existingAccount = await getAccountByUserId(existingUser.id);
+      
+      token.isOAuth = !!existingAccount;
+      token.email = existingUser.email;
+      token.name = existingUser.name;
       token.role = existingUser.role;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
       return token
     }
